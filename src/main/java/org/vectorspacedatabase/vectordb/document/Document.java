@@ -1,4 +1,4 @@
-package org.vectorspacedatabase.vectordb;
+package org.vectorspacedatabase.vectordb.document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class Content {
+public class Document {
     @JsonProperty(index = 1)
     private final String id;
 
@@ -26,7 +26,7 @@ public class Content {
     @JsonProperty(index = 4)
     private float[] embedding;
 
-    public Content(String id, String content, Map<String, Object> metadata) {
+    public Document(String id, String content, Map<String, Object> metadata) {
         this.id = id;
         this.content = content;
         this.metadata = metadata;
@@ -64,7 +64,7 @@ public class Content {
             return this;
         }
 
-        private String extractTextFromWord(File file) throws IOException {
+        private String extractTextFromPDF(File file) throws IOException {
             PDDocument pdfDocument = PDDocument.load(file);
             PDFTextStripper pdfTextStripper = new PDFTextStripper();
             String text = pdfTextStripper.getText(pdfDocument);
@@ -72,7 +72,7 @@ public class Content {
             return text;
         }
 
-        private String extractTextFromPDF(File file) throws IOException {
+        private String extractTextFromWord(File file) throws IOException {
             XWPFDocument document = new XWPFDocument(new FileInputStream(file));
             StringBuilder content = new StringBuilder();
 
@@ -89,10 +89,10 @@ public class Content {
             return String.valueOf(content.hashCode());
         }
 
-        public Content build() {
-            Assert.notNull(content, "Content must not be null");
+        public Document build() {
+            Assert.notNull(content, "Document must not be null");
             this.id = generateId(content);
-            return new Content(id, content, metadata);
+            return new Document(id, content, metadata);
         }
 
     }
@@ -121,8 +121,8 @@ public class Content {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Content content = (Content) o;
-        return Objects.equals(id, content.id) && Objects.equals(metadata, content.metadata) && Objects.equals(this.content, content.content) && Arrays.equals(embedding, content.embedding);
+        Document document = (Document) o;
+        return Objects.equals(id, document.id) && Objects.equals(metadata, document.metadata) && Objects.equals(this.content, document.content) && Arrays.equals(embedding, document.embedding);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Content {
 
     @Override
     public String toString() {
-        return "Content{" +
+        return "Document{" +
                 "id='" + id + '\'' +
                 ", metadata=" + metadata +
                 ", content='" + content + '\'' +
