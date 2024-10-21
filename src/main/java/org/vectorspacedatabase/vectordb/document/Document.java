@@ -24,13 +24,13 @@ public class Document {
     private final String content;
 
     @JsonProperty(index = 4)
-    private float[] embedding;
+    private List<Float> embedding;
 
     public Document(String id, String content, Map<String, Object> metadata) {
         this.id = id;
         this.content = content;
         this.metadata = metadata;
-        this.embedding = new float[0];
+        this.embedding = new ArrayList<>();
     }
 
     public static Builder builder() {
@@ -109,11 +109,11 @@ public class Document {
         return content;
     }
 
-    public float[] getEmbedding() {
+    public List<Float> getEmbedding() {
         return embedding;
     }
 
-    public void setEmbedding(float[] embedding) {
+    public void setEmbedding(List<Float> embedding) {
         this.embedding = embedding;
     }
 
@@ -122,14 +122,12 @@ public class Document {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Document document = (Document) o;
-        return Objects.equals(id, document.id) && Objects.equals(metadata, document.metadata) && Objects.equals(this.content, document.content) && Arrays.equals(embedding, document.embedding);
+        return Objects.equals(id, document.id) && Objects.equals(metadata, document.metadata) && Objects.equals(content, document.content) && Objects.equals(embedding, document.embedding);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, metadata, content);
-        result = 31 * result + Arrays.hashCode(embedding);
-        return result;
+        return Objects.hash(id, metadata, content, embedding);
     }
 
     @Override
@@ -138,7 +136,7 @@ public class Document {
                 "id='" + id + '\'' +
                 ", metadata=" + metadata +
                 ", content='" + content + '\'' +
-                ", embedding=" + Arrays.toString(embedding) +
+                ", embedding=" + embedding +
                 '}';
     }
 }
